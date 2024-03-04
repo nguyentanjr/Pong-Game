@@ -9,11 +9,11 @@ int paddleLeftY = SCREEN_HEIGHT / 2 - paddleHeight / 2;
 int paddleRightX = SCREEN_WIDTH - paddleWidth;
 int paddleRightY = SCREEN_HEIGHT / 2 - paddleHeight / 2;
 
-int ballMoveX = 3;
-int ballMoveY = 3;
+int ballMoveX = 5;
+int ballMoveY = 5;
 
 Game::Game(){}
-
+	
 Game::~Game(){}
 
 
@@ -65,13 +65,16 @@ void Game::render() {
 	SDL_Texture* textureBackground = SDL_CreateTextureFromSurface(renderer, tmpBackground);
 	SDL_RenderCopy(renderer, textureBackground, NULL, NULL);
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-	SDL_Rect paddleLeft = { paddleLeftX,paddleLeftY,paddleWidth,paddleHeight };
-	SDL_Rect paddleRight = { paddleRightX,paddleRightY,paddleWidth,paddleHeight };
+	SDL_Rect paddleLeft = { paddleLeftX + 5,paddleLeftY,paddleWidth,paddleHeight };
+	SDL_Rect paddleRight = { paddleRightX - 5,paddleRightY,paddleWidth,paddleHeight };
 
+	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 	SDL_RenderFillRect(renderer, &paddleLeft);
+	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 	SDL_RenderFillRect(renderer, &paddleRight);
 
 	SDL_Rect ball = { ballX, ballY, ballWidth, ballHeight };
+	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 	SDL_RenderFillRect(renderer, &ball);
 
 	SDL_RenderPresent(renderer);
@@ -81,11 +84,21 @@ void Game::checkCollision() {
 
 	ballX += ballMoveX;
 	ballY += ballMoveY;
-	if (ballY <= 0 || ballY + ballHeight > SCREEN_HEIGHT)ballMoveY = -ballMoveY;
-	if (ballX < 0 || ballY < 0 || ballX > SCREEN_WIDTH || ballY > SCREEN_HEIGHT)isRunning = false;
+	if (ballY < 0 || ballY + ballHeight > SCREEN_HEIGHT)ballMoveY = -ballMoveY;
+	if (ballX < 0 || ballX > SCREEN_WIDTH)isRunning = false;
 
-	if ((ballX <= paddleLeftX + paddleWidth && ballY > paddleLeftY && ballY < paddleLeftY + paddleHeight)||
-		(ballX + ballWidth >= paddleRightX && ballY + ballWidth > paddleRightY && ballY < paddleRightY + paddleHeight)) ballMoveX = -ballMoveX;
+	if (ballX < paddleWidth + 5) {
+		if (ballY + ballHeight > paddleLeftY && ballY < paddleLeftY + paddleHeight) {
+			ballMoveX = -ballMoveX;
+		}
+		else isRunning = false;
+	}
+	else if (ballX + ballWidth > SCREEN_WIDTH - paddleWidth - 5) {
+		if (ballY + ballHeight > paddleRightY && ballY< paddleRightY + paddleHeight) {
+			ballMoveX = -ballMoveX;
+		}
+		else isRunning = false;
+	}
 }
 
 void Game::quit() {

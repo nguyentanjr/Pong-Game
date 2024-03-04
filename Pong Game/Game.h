@@ -1,6 +1,7 @@
 #ifndef _Game__H
 #define _Game__H
-
+const int FPS = 60;
+const int FRAME_DELAY = 1000 / FPS;
 #include "SDL.h"
 #include "SDL_image.h"
 #include <SDL_ttf.h>
@@ -15,8 +16,8 @@ const int SCREEN_HEIGHT = 600;
 const int paddleHeight = 120;
 const int paddleWidth = 25;
 
-const int ballWidth = 25;
-const int ballHeight = 25;
+const int ballWidth = 15;
+const int ballHeight = 15;
 
 const int paddleMove = 10;
 class Game {
